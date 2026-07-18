@@ -11,7 +11,7 @@ export const SITE = {
   title: 'Gilang Arif Afrisda — Dreamspace · Portofolio 3D',
   description:
     'Portofolio imersif Gilang Arif Afrisda — bukan halaman, tapi ruang. Di persimpangan kode dan pasar: trading, riset kuantitatif, dan web interaktif.',
-  url: 'https://dreamspace-gilang.vercel.app', // ganti setelah deploy
+  url: 'https://dreamspace-two.vercel.app', // production (Vercel)
   locale: 'id_ID',
 
   // Slot aset — kosong sekarang, aktif begitu file-nya diletakkan.
@@ -45,7 +45,7 @@ export const STATIONS = [
     kicker: '01 · Asal',
     heading: 'Dua dunia, satu bahasa',
     body: [
-      'Operator SANZ CAPITAL — family office trading yang bergerak lintas aset: ekuitas IDX & AS, crypto, forex, dan emas (XAUUSD). Berlatar Computer Engineering di Telkom University Surabaya, saya bekerja di persimpangan dua dunia.',
+      'Operator SANZ CAPITAL — family office trading lintas aset: ekuitas IDX & AS, crypto, forex, dan komoditas. Berlatar Computer Engineering di Telkom University Surabaya, saya bekerja di persimpangan dua dunia.',
       'Di satu sisi, eksekusi trading berbasis market microstructure dan analisis aliran order; di sisi lain, riset kuantitatif yang sistematis. Alih-alih bergantung pada tools jadi, saya membangun infrastruktur sendiri — dari sistem manajemen portofolio, pipeline data & sinyal, hingga mesin backtesting.',
       'Bagi saya, kode dan pasar adalah bahasa yang sama.',
     ],

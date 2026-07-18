@@ -48,7 +48,7 @@ const { renderer, scene, camera } = sceneApi;
 const anchors = {
   origin: stationAnchor(stations[0].progress, 3.0, 0.3),
   about: stationAnchor(stations[1].progress, -3.1, 0.2),
-  skills: stationAnchor(stations[3].progress, -2.9, 0.5),
+  skills: stationAnchor(stations[3].progress, -2.1, 0.5),
 };
 
 const origin = createOrigin(scene, anchors.origin);

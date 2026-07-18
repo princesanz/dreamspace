@@ -19,12 +19,21 @@ export function createSkills(scene, anchor) {
   const C = SKILL_CLUSTERS.length;
   const centroids = SKILL_CLUSTERS.map((_, i) => {
     const ang = (i / C) * Math.PI * 2 + 0.35;
-    const r = 2.7;
-    return new THREE.Vector3(
-      Math.cos(ang) * r,
-      (i % 2 ? 1 : -1) * randRange(0.7, 1.6),
-      Math.sin(ang) * r * 0.8,
-    );
+    const r = 3.0;
+    // Distinct height per cluster (stride-2 through 5 slots) so ring-adjacent
+    // clusters never share a height band — i%2 gave clusters 0 and 4 the same
+    // sign and their labels collided on screen.
+    const y = (((i * 2) % C) - 2) * 0.85;
+    const p = new THREE.Vector3(Math.cos(ang) * r, y, Math.sin(ang) * r * 0.55);
+    // Per-cluster corrections for how this station's camera actually frames
+    // the ring: backend (2) lands hardest camera-left and deep, frontend (1)
+    // and AI (3) interleave near centre — pull them apart and toward the
+    // camera so each cluster owns clear screen space at the station stop.
+    if (i === 1) p.add(new THREE.Vector3(1.6, 0.3, 0.8));
+    if (i === 2) p.add(new THREE.Vector3(3.3, -0.8, 0.9));
+    if (i === 3) p.add(new THREE.Vector3(0.55, -0.35, 0.5));
+    if (i === 4) p.add(new THREE.Vector3(1.5, 0.8, 0));
+    return p;
   });
 
   const nodes = [];
@@ -32,9 +41,49 @@ export function createSkills(scene, anchor) {
   for (let i = 0; i < count; i++) {
     const skill = SKILLS[i];
     const clusterColor = new THREE.Color(skill.color);
-    // Tight gaussian jitter around the cluster centroid.
-    const g = () => ((rand() + rand() + rand()) / 1.5 - 1) * 0.75;
-    const base = centroids[skill.cluster].clone().add(new THREE.Vector3(g(), g() * 0.85, g()));
+    // Gaussian jitter around the cluster centroid, plus a deterministic
+    // per-node depth/height stagger so labels of neighbouring nodes never
+    // land on the same screen line. Clusters that sit deeper in the frame
+    // project smaller, so they get a wider world-space spread to keep their
+    // labels apart on screen.
+    const spread = [1.15, 1.7, 1.3, 1.35, 1.5][skill.cluster];
+    const g = () => ((rand() + rand() + rand()) / 1.5 - 1) * 1.3 * spread;
+    const base = centroids[skill.cluster].clone().add(new THREE.Vector3(
+      g(),
+      g() * 0.85 + ((i % 3) - 1) * 0.34,
+      g() + ((i % 4) - 1.5) * 0.3,
+    ));
+    // The random draw bunches labels for the three centre/deep clusters at
+    // this station's camera angle no matter the spread — lay their nodes on
+    // staggered rings instead (drift + depth stagger keep it organic). The
+    // g() draws above still run so the other clusters' seeded layout stays
+    // identical.
+    const RING = { 1: { r: 1.05, ph: 0.2 }, 2: { r: 1.1, ph: 0.4 }, 3: { r: 1.2, ph: 0.785 } };
+    if (RING[skill.cluster]) {
+      const { r: rr, ph } = RING[skill.cluster];
+      const n = SKILL_CLUSTERS[skill.cluster].nodes.length;
+      const k = byCluster[skill.cluster].length;
+      const a2 = (k / n) * Math.PI * 2 + ph;
+      base.copy(centroids[skill.cluster]).add(new THREE.Vector3(
+        Math.cos(a2) * rr,
+        (k % 2 ? 0.8 : -0.55) + Math.sin(a2) * 0.3,
+        Math.sin(a2) * 0.8,
+      ));
+    }
+    // Hand nudges for the few nodes whose labels still collided at the
+    // station stop (1440px viewport) — layout is seeded-deterministic,
+    // so these hold across reloads.
+    const NUDGE = {
+      'Order Flow': [0, 0.55, 0],
+      'Walk-Forward': [0.4, -0.75, 0],
+      'PC Building': [0.9, -0.6, 0],
+      'eMMC/UFS Repair': [0.3, 0.5, 0],
+      'Three.js': [0, 0.55, 0],
+      'Binance WebSocket': [0.35, -0.5, 0],
+      Tailwind: [0, 0.45, 0],
+      pandas: [0.25, -0.35, 0],
+    };
+    if (NUDGE[skill.name]) base.add(new THREE.Vector3(...NUDGE[skill.name]));
 
     const mat = track(new THREE.MeshBasicMaterial({ color: clusterColor.clone() }));
     const mesh = new THREE.Mesh(sphereGeo, mat);
