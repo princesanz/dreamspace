@@ -11,10 +11,9 @@ Vault path: `C:\Users\SANZ\OneDrive\Dokumen\sanz-brain`
 
 1. Read `memory/INDEX.md` from sanz-brain first — every session, no exceptions.
 2. Read the project hub note `projects/dreamspace.md` for current status and open items.
-3. Check `inbox/claude-inbox.md` for pending tasks / handoffs from other agents.
-4. Run the daily brief: `cd "C:\Users\SANZ\OneDrive\Dokumen\sanz-brain" && bash scripts/daily-brief.sh`,
-   then read `generated/LATEST.md` and report it (project pulse + vault state matter here;
-   market section is fine to skim). Skip only if Sanz says "no brief".
+3. Skim `inbox/claude-inbox.md` for open handoffs.
+4. Daily brief is **on request only** — run `bash scripts/daily-brief.sh` and read
+   `generated/LATEST.md` if Sanz asks ("brief" / "what's going on"). Not automatic.
 
 ## Session end (mandatory)
 
