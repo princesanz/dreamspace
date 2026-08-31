@@ -91,6 +91,7 @@ export const CONTACT = {
   socials: [
     { label: 'GitHub', url: 'https://github.com/princesanz' },
     { label: 'LinkedIn', url: 'https://www.linkedin.com/in/gilang-afrisda-15b7202a3/' },
+    { label: 'Instagram', url: 'https://www.instagram.com/gilang_afrisda' },
   ],
 };
 
